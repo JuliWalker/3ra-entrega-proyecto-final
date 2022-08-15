@@ -1,6 +1,5 @@
 import {Router} from 'express'
 import { productsDao as api } from '../daos/index.js'
-import passport from "passport";
 
 const router = Router()
 

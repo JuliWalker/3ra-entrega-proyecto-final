@@ -3,7 +3,7 @@ dotenv.config()
 
 let productsDao
 
-switch (process.env.DB_PRODUCTS_NAME) {
+switch ("mongoDB") {
     case 'mongoDB':
         import('./products/mongoDBProducts.js').then(({ MongoDBProducts }) => {
             productsDao = new MongoDBProducts()
@@ -19,7 +19,7 @@ export { productsDao }
 
 let usersDao
 
-switch (process.env.DB_USERS_NAME) {
+switch ("mongoDB") {
     case 'mongoDB':
         import('./users/mongoDBUsers.js').then(({ MongoDBUsers }) => {
             usersDao = new MongoDBUsers()
