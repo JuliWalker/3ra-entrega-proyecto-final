@@ -4,8 +4,9 @@ import MongoStore from "connect-mongo";
 import 'dotenv/config'
 import passport from "passport";
 import './passport/local.js'
+import morgan from "morgan";
+// const morgan = require('morgan');
 
-const morgan = require('morgan');
 const app = express();
 const PORT = process.env.PORT || 8080
 
@@ -37,7 +38,7 @@ app.set('view engine', 'ejs');
 
 /** Routes */
 import homeRouter from './routes/home.js';
-import routesProducts from './routes/products'
+import routesProducts from './routes/products.js'
 // import routesCart from './routes/cart'
 import loginRouter from './routes/login.js';
 import logoutRouter from './routes/logout.js';
