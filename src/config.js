@@ -2,7 +2,7 @@ import 'dotenv/config'
 
 const options = {
     mongoDB:{
-        URL: "mongodb+srv://julian:juliyluli@ecommerce.zjwuzjv.mongodb.net/ecommerce?retryWrites=true&w=majority",
+        URL: process.env.DB_MONGO,
         options:{
             useNewUrlParser: true,
             useUnifiedTopology: true

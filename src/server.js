@@ -22,7 +22,7 @@ app.use(session(
         resave: true,
         saveUninitialized: true,
         store: MongoStore.create({
-            mongoUrl: "mongodb+srv://julian:juliyluli@ecommerce.zjwuzjv.mongodb.net/ecommerce?retryWrites=true&w=majority",
+            mongoUrl: process.env.DB_MONGO,
             ttl: 60 * 10 // 10 minutes
             })
     }
@@ -62,12 +62,11 @@ try {
 
 
 // Corregir la parte de Bcrypt y serialize para que pase bien los parametros de nombre del usuario.
+// Reemplazar algunos loggers con los loggers vistos en clase
 
 // Modificar todas las credenciales que viajan desdel el archivo .env para ver si corre heroku.
 // Agregar la parte de webmailing
 // Habilitar el modo cluster para el server.
-// Reemplazar algunos loggers con los loggers vistos en clase
-
 // Cargar productos en la app con las imagenes cargadas bien
 // Agregar a la tabla de usuarios todos los datos que pide el entregable
 // Revisar que funcione Bcrypt para guardar las contraseñas
