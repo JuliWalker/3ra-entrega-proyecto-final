@@ -5,12 +5,28 @@ import 'dotenv/config'
 import passport from "passport";
 import './passport/local.js'
 import morgan from "morgan";
-// const morgan = require('morgan');
+import indexRouter from './routes/indexRoutes.js';
+import os from "os";
+import cluster from "cluster";
 
 const app = express();
 const PORT = process.env.PORT || 8080
+const MODO = process.env.MODO || "fork";
+const nroCPUs = os.cpus().length;
 
+/** corremos el modo cluster si estamos en ese modo: */
 
+if (cluster.isPrimary && MODO === "cluster") {
+    console.log(
+      `🧮 Primary PID ${process.pid} is running. On port ${PORT}. 🧑‍💻 MODO: ${MODO}.`
+    );
+    for (let i = 0; i < nroCPUs; i++) {
+      cluster.fork(); // crea un proceso por cada cpu disponible
+    }
+    cluster.on("exit", (worker, code, signal) => {
+      console.log(`worker ${worker.process.pid} died`);
+    });
+  } else {
 
 /** Middlewares */
 app.use(morgan('dev'));
@@ -37,19 +53,7 @@ app.set('view engine', 'ejs');
 
 
 /** Routes */
-import homeRouter from './routes/home.js';
-import routesProducts from './routes/products.js'
-// import routesCart from './routes/cart'
-import loginRouter from './routes/login.js';
-import logoutRouter from './routes/logout.js';
-import registerRouter from './routes/register.js';
-
-app.use('/', homeRouter);
-app.use('/api/productos',routesProducts)
-// app.use('/api/carrito',routesCart)
-app.use('/login', loginRouter);
-app.use('/logout', logoutRouter);
-app.use('/registro', registerRouter);
+app.use('/api', indexRouter);
 
 
 /** Server */
@@ -60,14 +64,12 @@ try {
     console.log('Error de conexión con el servidor...', error)
 }
 
+}
 
-// Corregir la parte de Bcrypt y serialize para que pase bien los parametros de nombre del usuario.
+
 // Reemplazar algunos loggers con los loggers vistos en clase
-
-// Modificar todas las credenciales que viajan desdel el archivo .env para ver si corre heroku.
 // Agregar la parte de webmailing
-// Habilitar el modo cluster para el server.
-// Cargar productos en la app con las imagenes cargadas bien
-// Agregar a la tabla de usuarios todos los datos que pide el entregable
-// Revisar que funcione Bcrypt para guardar las contraseñas
+// agregar la parte de soket io
+// Agregar al formulario de carga de usuarios lo de subir imagenes
 // agregar la parte del cart con la logica que subio Laura para leer desde ID todo el producto.
+// Pasar todos los Schemas a la carpeta MongoSchemas

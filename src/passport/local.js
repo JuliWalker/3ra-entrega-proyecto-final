@@ -1,35 +1,24 @@
 import passport from "passport";
 import { Strategy } from "passport-local";
 import { usersDao as api } from '../daos/index.js'
+import { encryptPassword, comparePassword } from '../config/bcrypt.js'
 
 const LocalStrategy = Strategy
 
 passport.use('registro', new LocalStrategy({
     usernameField:'email',
     passwordField:'password',
-    passReqToCallback:true
-    // esto ultimo es para habilitar a Passport a tomar el resto de la info que viene en el objeto "req" ademas del pass y el user
+    passReqToCallback:true  // esto ultimo es para habilitar a Passport a tomar el resto de la info que viene en el objeto "req" ademas del pass y el user
 },async(req,email,password,done)=>{
     const usuarioDB = await api.getByMail(email)
     if (usuarioDB) {
         return done(null,false)
     }
-    // Puedo usar el schema de mongoose como un constructor de objeto??? Seria algo como lo siguiente pero no me deja:
-/*  
-    const usuarioNuevo = new api()
-    usuarioNuevo.email = email
-    usuarioNuevo.password = password
-    const { nombre } = req.body;
-    usuarioNuevo.nombre = nombre    
-*/
-    const { nombre } = req.body;
-    const usuarioNuevo = {"email": email,"nombre": nombre,"password": password }
-    // aca tenfo la misma duda que con el constructor, como uso la API para llamar al method dentro del constructor? seria algo como "api.encriptarPassword(password)" ??
-    await api.saveNew(usuarioNuevo)
-    // voy a agregar un paso que parece raro pero es para que el usuario que guarde la session tenga el ID de mongo tambien
-    const usuarioMongo = await api.getByMail(usuarioNuevo.email)
-    console.log(usuarioMongo)
-    done(null,usuarioMongo)
+    // encripto la pass antes de guardarla en mongo
+    req.body.password = await encryptPassword(password);
+    // guardo el usuario y lo guardo en una constante para devolverlo con el done
+    const usuarioMongo = await api.saveNew(req.body)
+    return done(null,usuarioMongo)
 }))
 
 passport.use('login', new LocalStrategy({
@@ -39,7 +28,12 @@ passport.use('login', new LocalStrategy({
 },async(req,email,password,done)=>{
     const usuarioDB = await api.getByMail(email)
     if (!usuarioDB) {
-        return done(null,false)
+        return done(null,false, { message: "El usuario no existe" })
+    }
+    // compara el password que ingreso el usuario con el password hasheado y guardado de la DB
+    const isTruePassword = await comparePassword(password, usuarioDB.password);
+    if (!isTruePassword) {
+      return done(null, false, { message: "El password es incorrecto" });
     }
     done(null,usuarioDB)
 }))

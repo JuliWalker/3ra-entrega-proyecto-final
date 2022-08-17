@@ -8,7 +8,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/",passport.authenticate('login',{
-    failureRedirect:'/login/errorLogin',
+    failureRedirect:'/api/login/errorLogin',
     successRedirect:'/api/productos'
 })) 
 

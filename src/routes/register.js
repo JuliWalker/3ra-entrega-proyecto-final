@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
 
 
 router.post("/",passport.authenticate('registro',{
-    failureRedirect:'/registro/errorRegistro',
+    failureRedirect:'/api/registro/errorRegistro',
     successRedirect:'/api/productos'
 })) 
 

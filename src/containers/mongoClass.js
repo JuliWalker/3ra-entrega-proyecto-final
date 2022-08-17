@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import options from "../config.js"
+import options from "../config/configMongoDB.js"
 
 mongoose.connect(options.mongoDB.URL,options.mongoDB.options)
 
