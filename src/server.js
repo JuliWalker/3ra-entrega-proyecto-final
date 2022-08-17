@@ -54,6 +54,9 @@ app.set('view engine', 'ejs');
 
 /** Routes */
 app.use('/api', indexRouter);
+app.get("/", (req, res) => {
+  res.redirect("/api");
+});
 
 
 /** Server */
