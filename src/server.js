@@ -74,5 +74,6 @@ try {
 // Agregar la parte de webmailing
 // agregar la parte de soket io
 // Agregar al formulario de carga de usuarios lo de subir imagenes
+// Agregar a las views las funcionalidades para cargar y ver el carrito.
+
 // agregar la parte del cart con la logica que subio Laura para leer desde ID todo el producto.
-// Pasar todos los Schemas a la carpeta MongoSchemas

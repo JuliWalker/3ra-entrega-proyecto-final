@@ -1,5 +1,6 @@
 import {Router} from 'express'
 import { productsDao as api } from '../daos/index.js'
+import { usersDao } from '../daos/index.js'
 
 const router = Router()
 
@@ -12,13 +13,16 @@ function isAuth(req,res,next){
 }
 // tengo que agregar el middleware de auth a todas las rutas get
 
-router.get('/', async (req,res)=>{
+router.get('/', isAuth, async (req,res)=>{
     try {
+
+        const usuario = await usersDao.getOne(req.session.passport.user)
+
         const allProducts = await api.getAll()
         console.log("esto es lo que esta traynedo el req session")
         console.log(req.session)
         // aca tengo que ver como hago para traerme el nombre de la session que esta serializada
-        res.render("home", { nombre: req.session.nombre, products: allProducts });
+        res.render("home", { nombre: usuario.nombre, products: allProducts });
     } catch (error) {
         console.log(error)
     }    
